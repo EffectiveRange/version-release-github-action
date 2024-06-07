@@ -5,6 +5,10 @@ branding:
   color: 'blue'
 
 inputs:
+  release-version:
+    description: 'Release version'
+    required: false
+    default: ''
   download-name:
     description: 'Name of the artifacts to download'
     required: false
@@ -22,8 +26,8 @@ runs:
       shell: bash
       run: |
         VERSION_REGEX="^[0-9]+\.[0-9]+\.[0-9]+$"
-        if [[ "${{ inputs.package-version }}" =~ $VERSION_REGEX ]]; then
-          echo "VERSION=${{ inputs.package-version }}" >> $GITHUB_ENV
+        if [[ "${{ inputs.release-version }}" =~ $VERSION_REGEX ]]; then
+          echo "VERSION=${{ inputs.release-version }}" >> $GITHUB_ENV
         elif [[ "${GITHUB_REF#refs/tags/v}" =~ $VERSION_REGEX ]]; then
           echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
         else
@@ -52,20 +56,20 @@ runs:
         git tag -fa latest -m "Latest release"
         git push origin :refs/tags/latest
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
     - name: Move version tag
       shell: bash
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
 
-        VERSION_TAG=${GITHUB_REF#refs/tags/}
+        VERSION_TAG="v$VERSION"
         git tag -fa ${VERSION_TAG} -m "Release ${VERSION_TAG}"
         git push origin :refs/tags/${VERSION_TAG}
 
         git push origin --tags
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
     - if: ${{ inputs.create-latest == 'true' }}
       name: Release latest tag
       uses: softprops/action-gh-release@v2
@@ -74,11 +78,11 @@ runs:
         files: |
           ${{ github.workspace }}/artifacts/*
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
     - name: Release version tag
       uses: softprops/action-gh-release@v2
       with:
         files: |
           ${{ github.workspace }}/artifacts/*
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
