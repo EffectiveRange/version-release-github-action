@@ -34,10 +34,6 @@ runs:
           echo "Error: Invalid version"
           exit 1
         fi
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        ref: main
     - name: Download artifacts
       uses: actions/download-artifact@v4
       with:
