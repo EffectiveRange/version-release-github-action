@@ -21,6 +21,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Release
         uses: EffectiveRange/version-release-github-action@v1
         with:
