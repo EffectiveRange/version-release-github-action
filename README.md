@@ -11,7 +11,9 @@ Create release of uploaded artifacts with version tagging
 ## Inputs
 
 - `release-version`: Version of the release (if not provided, will use the given git tag)
-- `download-name`: Name of the uploaded artifact (default: `${{ github.event.repository.name }}`)
+- `download-name`: Name of the uploaded artifact (default: none)
+- `download-pattern`: Name pattern of the artifacts to download (default: none)
+- `merge-multiple`: Merge multiple artifacts into one directory? (default: `true`)
 - `create-latest`: Create an additional 'latest' tag and release (default: `true`)
 
 ## Example usage
