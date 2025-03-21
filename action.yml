@@ -12,7 +12,13 @@ inputs:
   download-name:
     description: 'Name of the artifacts to download'
     required: false
-    default: ${{ github.event.repository.name }}
+  download-pattern:
+    description: 'Name pattern of the artifacts to download'
+    required: false
+  merge-multiple:
+    description: 'Merge multiple artifacts into one directory?'
+    required: false
+    default: 'true'
   create-latest:
     description: 'Should create latest tag?'
     required: false
@@ -38,6 +44,8 @@ runs:
       uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.download-name }}
+        pattern: ${{ inputs.download-pattern }}
+        merge-multiple: ${{ inputs.merge-multiple }}
         path: ${{ github.workspace }}/artifacts
     - name: Display structure of downloaded files
       shell: bash
